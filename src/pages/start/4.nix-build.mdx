@@ -223,25 +223,26 @@ Here's the package definition that builds our JavaScript package:
 
 ```nix filename=flake.nix
 {
-  packages.default = pkgs.buildNpmPackage {
-    name = "zero-to-nix-javascript";
+  packages = forAllSystems ({ pkgs }: {
+    default = pkgs.buildNpmPackage {
+      name = "zero-to-nix-javascript";
 
-    # The packages required by the build process
-    buildInputs = [
-      pkgs.nodejs_18
-    ];
+      buildInputs = with pkgs; [
+        nodejs_18
+      ];
 
-    # The code sources for the package
-    src = ./.;
-    npmDepsHash = "sha256-Ghh9jxxJH7lgn99X1L6WAhrsQhnJlub2cyUUBmSBwfQ=";
+      src = ./.;
 
-    # How the output of the build phase
-    installPhase = ''
-      mkdir $out
-      npm run build
-      cp dist/index.html $out
-    '';
-  }
+      npmDepsHash = "sha256-8Bj7nPZBAU+SnVTeKeArcjYnfZV4z/4I7fX+l0V+v04=";
+
+      npmBuild = "npm run build";
+
+      installPhase = ''
+        mkdir $out
+        cp dist/index.html $out
+      '';
+    };
+  });
 }
 ```
 
